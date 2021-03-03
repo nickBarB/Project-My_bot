@@ -37,14 +37,15 @@ def converter(message: telebot.types.Message):
     values = message.text.split(' ')
     try:
         if len(values) != 3:
-            raise APIException('Error')
+            raise APIException('Error, incorrect data entry'
+                               '\nОшибка, некорректный ввод данных')
 
         answer = Currency_convertor.get_price(*values)
     except APIException as e:
-        bot.reply_to(message, f'Error in comand:\n{e}')
+        bot.reply_to(message, f'Error in command: \nОшибка команды:\n{e}')
     except Exception as e:
         traceback.print_tb(e.__traceback__)
-        bot.reply_to(message, f'Unknown error:\n{e}')
+        bot.reply_to(message, f'Unknown error: \nНеизвестная ошибка: \n{e}')
     else:
         bot.reply_to(message, answer)
 
