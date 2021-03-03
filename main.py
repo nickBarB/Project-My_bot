@@ -1,28 +1,35 @@
 import telebot
 from config import exchanges, TOKEN
-from extensions import APIException, Currency_convertor
+from extensions import APIException, Currency_convertor, quick_info
 import traceback
-
 
 bot = telebot.TeleBot(TOKEN)
 
-@bot.message_handler(commands=['start'])
+@bot.message_handler(commands=['start', 'help'])
 def start(message: telebot.types.Message):
-    text = 'Hello! команда /help - вызов инструкции'
-    bot.send_message(message.chat.id, text)
-
-@bot.message_handler(commands=['help'])
-def start(message: telebot.types.Message):
-    text = '/currencies - список доступных валют' \
-           ' что бы конвертировать валюты используйте следующую форму записи' \
-           ' <имя валюты>  <в какую валюту перевести>  <количество>'
+    text = 'Hello! command /help - call instruction' \
+           '\ncommand /currencies - list of available currencies.' \
+           '\nTo convert currencies, use the following entry form:' \
+           '\n<currency name> <to which currency to convert> <amount>' \
+           '\n' \
+           '\nПриветствую! команда /help - вызов инструкции.' \
+           '\nкоманда /currencies - список доступных валют.' \
+           '\n Для конвертации валют используйте следующую форму записи:' \
+           '\n <имя валюты>  <в какую валюту перевести>  <количество>.' \
+           '\nкоманда /quick_info - быстрый вывод стоимости евро и доллара в рублях.'
     bot.send_message(message.chat.id, text)
 
 @bot.message_handler(commands=['currencies'])
 def values(message: telebot.types.Message):
-    text = 'Currencies available for conversion: '
+    text = 'Currencies available for conversion: ' \
+           '\nВалюты, доступные для конвертации:'
     for i in exchanges.keys():
         text = '\n'.join((text, i))
+    bot.reply_to(message, text)
+
+@bot.message_handler(commands=['quick_info'])
+def quick_commands(message: telebot.types.Message):
+    text = quick_info()
     bot.reply_to(message, text)
 
 @bot.message_handler(content_types=['text'])
